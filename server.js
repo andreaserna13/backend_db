@@ -6,6 +6,8 @@ const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 
 const app = express();
+
+// ✅ Puerto para Railway
 const PORT = process.env.PORT || 3001;
 
 app.use(cors());
@@ -15,7 +17,7 @@ app.use(express.json());
 const sequelize = require('./config/db');
 const Usuario = require('./src/models/user.model');
 
-// === Probar conexión DB ===
+// ✅ Probar conexión DB
 sequelize.authenticate()
   .then(() => console.log('✅ Conexión a DB establecida'))
   .catch(err => console.error('❌ Error de conexión DB:', err));
@@ -43,11 +45,12 @@ const guardarUsuarios = () => {
 
 cargarUsuarios();
 
-// === Rutas ===
-
+// ✅ Ruta de inicio para Railway
 app.get('/', (req, res) => {
-  res.send('Servidor funcionando correctamente');
+  res.status(200).send('Servidor funcionando correctamente');
 });
+
+// === Rutas de tu lógica original ===
 
 app.post('/api/auth/login', async (req, res) => {
   const { nombre, clave, tipoUsuario } = req.body;
@@ -70,7 +73,7 @@ app.post('/api/auth/login', async (req, res) => {
     console.error('Error login DB:', err);
   }
 
-  // Si no existe en DB, intenta con json (para mantener tu originalidad)
+  // Si no existe en DB, intenta con JSON (para mantener tu originalidad)
   const user = usuarios.find(
     u => u.nombre === nombre && u.clave === clave && u.tipoUsuario === tipoUsuario
   );
@@ -163,7 +166,7 @@ app.get('/api/usuario/lista', (req, res) => {
   res.json(usuarios);
 });
 
-// === Levantar servidor ===
+// ✅ Levantar servidor
 app.listen(PORT, () => {
   console.log(`Servidor backend escuchando en http://localhost:${PORT}`);
 });
