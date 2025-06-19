@@ -1,9 +1,8 @@
 const { Sequelize } = require('sequelize');
 
-const sequelize = new Sequelize('railway', 'root', 'jeSjgAAWuTwcbIeupnakGqncuREfWIeg', {
-  host: 'interchange.proxy.rlwy.net',
-  port: 53388,
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'mysql',
+  protocol: 'mysql',
   dialectOptions: {
     ssl: {
       require: true,
@@ -14,6 +13,8 @@ const sequelize = new Sequelize('railway', 'root', 'jeSjgAAWuTwcbIeupnakGqncuREf
 });
 
 module.exports = sequelize;
+
+
 
 
 
