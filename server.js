@@ -6,8 +6,6 @@ const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 
 const app = express();
-
-// ✅ Puerto para Railway
 const PORT = process.env.PORT || 3001;
 
 app.use(cors());
@@ -17,12 +15,19 @@ app.use(express.json());
 const sequelize = require('./config/db');
 const Usuario = require('./src/models/user.model');
 
-// ✅ Probar conexión DB
+// ✅ Conexión a DB y creación automática de tablas
 sequelize.authenticate()
-  .then(() => console.log('✅ Conexión a DB establecida'))
+  .then(() => {
+    console.log('✅ Conexión a DB establecida');
+
+    // Crea las tablas si no existen
+    sequelize.sync({ force: false })
+      .then(() => console.log('✅ Tablas sincronizadas'))
+      .catch(err => console.error('❌ Error al sincronizar tablas:', err));
+  })
   .catch(err => console.error('❌ Error de conexión DB:', err));
 
-// === Inicial usuarios.json (solo si lo quieres seguir usando) ===
+// === Manejo de usuarios desde JSON como respaldo ===
 let usuarios = [];
 const USERS_FILE = './usuarios.json';
 
@@ -45,12 +50,12 @@ const guardarUsuarios = () => {
 
 cargarUsuarios();
 
-// ✅ Ruta de inicio para Railway
+// ✅ Ruta de prueba para Railway
 app.get('/', (req, res) => {
   res.status(200).send('Servidor funcionando correctamente');
 });
 
-// === Rutas de tu lógica original ===
+// === Rutas ===
 
 app.post('/api/auth/login', async (req, res) => {
   const { nombre, clave, tipoUsuario } = req.body;
@@ -73,7 +78,7 @@ app.post('/api/auth/login', async (req, res) => {
     console.error('Error login DB:', err);
   }
 
-  // Si no existe en DB, intenta con JSON (para mantener tu originalidad)
+  // Si no existe en DB, intenta con JSON (respaldo original)
   const user = usuarios.find(
     u => u.nombre === nombre && u.clave === clave && u.tipoUsuario === tipoUsuario
   );
@@ -161,12 +166,12 @@ app.post('/api/usuario/registro', async (req, res) => {
   }
 });
 
-// Listar usuarios (de JSON solo)
+// Lista de usuarios (solo desde JSON por compatibilidad original)
 app.get('/api/usuario/lista', (req, res) => {
   res.json(usuarios);
 });
 
-// ✅ Levantar servidor
+// ✅ Iniciar servidor
 app.listen(PORT, () => {
   console.log(`Servidor backend escuchando en http://localhost:${PORT}`);
 });

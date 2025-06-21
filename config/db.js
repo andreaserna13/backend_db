@@ -2,17 +2,14 @@ const { Sequelize } = require('sequelize');
 
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'mysql',
-  protocol: 'mysql',
+  logging: false,
   dialectOptions: {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false
-    }
-  },
-  logging: false
+    ssl: false // 👈 Esto le dice a Sequelize que NO use SSL
+  }
 });
 
 module.exports = sequelize;
+
 
 
 
